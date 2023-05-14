@@ -75,11 +75,11 @@ export default function Hero() {
           <div className='mt-10 flex items-center gap-x-6'>
             <Web3Button />
             {isConnecting ? (
-              <p>Connecting...</p>
+              <p className='text-white'>Connecting...</p>
             ) : isDisconnected ? (
-              <p>Connect</p>
+              <p className='text-white'>Connect</p>
             ) : (
-              <p>{address}</p>
+              <p className='text-white'>{address}</p>
             )}
           </div>
           <EnsInput />

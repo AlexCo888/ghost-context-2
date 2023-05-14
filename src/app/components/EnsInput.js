@@ -35,11 +35,11 @@ export default function EnsInput() {
         </div>
       </form>
       {isLoading ? (
-        <div>Fetching address…</div>
+        <div className='text-white'>Fetching address…</div>
       ) : isError ? (
-        <div>Error fetching address</div>
+        <div className='text-white'>Error fetching address</div>
       ) : (
-        <div>Address: {data}</div>
+        <div className='text-white'>Address: {data}</div>
       )}
     </div>
   );
