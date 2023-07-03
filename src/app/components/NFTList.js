@@ -84,7 +84,7 @@ const NFTs = () => {
                       ) {
                         return (
                           <li
-                            key={i}
+                            key={nft.contract['deployedBlockNumber']}
                             className='inline-flex w-64 flex-col text-center lg:w-auto'
                           >
                             <div className='group relative'>

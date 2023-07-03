@@ -15,6 +15,7 @@
       if (!isError && !isLoading && data) {
         setEnsAddress(data);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, isLoading, isError]);
 
     const handleSubmit = async (e, ensName) => {
