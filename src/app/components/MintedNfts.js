@@ -52,7 +52,7 @@ export default function MintedNfts() {
             Our NFTs
           </h2>
           <p className='mt-6 text-lg leading-8 text-gray-300'>
-            Anyone can mint 'ghost context' NFTs and benefit from the
+            Anyone can mint ghost context NFTs and benefit from the
             connections they offer, as we are a vibrant team driven by passion
             and committed to delivering exceptional outcomes for our users.
           </p>
