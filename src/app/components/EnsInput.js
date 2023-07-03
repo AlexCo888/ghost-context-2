@@ -1,5 +1,7 @@
 import { useEnsAddress } from 'wagmi';
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import { EnsContext } from './EnsContext'; // Import the context
+
 
 export default function EnsInput() {
   const [ensName, setEnsName] = useState('');
@@ -7,6 +9,13 @@ export default function EnsInput() {
     name: ensName,
     chainId: 1,
   });
+  const { setEnsAddress } = useContext(EnsContext); // Consume the context
+
+  useEffect(() => {
+    if (!isError && !isLoading && data) {
+      setEnsAddress(data);
+    }
+  }, [data, isLoading, isError]);
 
   const handleSubmit = async (e, ensName) => {
     e.preventDefault();
@@ -39,7 +48,7 @@ export default function EnsInput() {
       ) : isError ? (
         <div className='text-white'>Error fetching address</div>
       ) : (
-        <div className='text-white'>Address: {data}</div>
+        <div className='text-white'></div>
       )}
     </div>
   );

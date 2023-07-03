@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require('tailwindcss/plugin');
+
 module.exports = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -16,5 +18,19 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/forms'),
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        '.no-scrollbar::-webkit-scrollbar': {
+          display: 'none ',
+        },
+        '.no-scrollbar': {
+          '-ms-overflow-style': 'none' /* IE and Edge */,
+          'scrollbar-width': 'none' /* Firefox */,
+        },
+        '.max-w-button': {
+          'max-width': 'fit-content',
+        },
+      });
+    }),
   ],
-}
+};

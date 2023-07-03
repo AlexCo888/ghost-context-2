@@ -74,13 +74,13 @@ export default function Hero() {
           </p>
           <div className='mt-10 flex items-center gap-x-6'>
             <Web3Button />
-            {isConnecting ? (
+            {/* {isConnecting ? (
               <p className='text-white'>Connecting...</p>
             ) : isDisconnected ? (
               <p className='text-white'>Connect</p>
             ) : (
               <p className='text-white'>{address}</p>
-            )}
+            )} */}
           </div>
           <EnsInput />
         </div>
