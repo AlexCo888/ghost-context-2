@@ -68,8 +68,8 @@ export default function NftModal({ onClose, address, count, contractsInCommon, n
                   <h2 className='pb-2'>You have <span className='font-semibold'>{count}</span> contracts in common with <span className='font-semibold'>{<Address address={address} />}</span></h2>
                   <ul>
                       {Object.entries(contractsInCommon).map((value) => (
-                        <div className="flex justify-around items-center align-middle pt-1">
-                        <li className="flex text-sm text-gray-500" key={value}>
+                        <div  key={value} className="flex justify-around items-center align-middle pt-1">
+                        <li className="flex text-sm text-gray-500">
                         <ShortAddress address={value} />
                         <a
                           href={`https://etherscan.io/address/${value}`}
