@@ -22,6 +22,7 @@ const NFTs = () => {
     if (address) {
       fetchNfts();
     }
+          // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   console.log(nfts.ownedNfts);

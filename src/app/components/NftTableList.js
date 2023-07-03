@@ -54,10 +54,12 @@ useEffect(() => {
       setPageKey(null);  // reset pageKey state
       fetchNfts(addressToFetch, null);
     }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ensAddress, address]);
 
   useEffect(() => {
     setNfts(totalNfts.slice(0, numNftsToShow));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [numNftsToShow]);
 
   const handleSeeMoreClick = () => {
