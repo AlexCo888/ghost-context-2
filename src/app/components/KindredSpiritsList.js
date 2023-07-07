@@ -167,6 +167,10 @@ const KindredSpiritsList = () => {
   console.log(contractsInCommonModal)
 
   return (
+    <div>
+         {isDisconnected && !ensAddress || isConnecting && !ensAddress ? (
+          <div></div>
+        ) : (
     <div className="bg-gray-900">
       <h2 className="mb-4 text-4xl text-center font-bold leading-none tracking-tight text-white md:text-3xl lg:text-4xl">
         Your Kindred Spirits
@@ -241,6 +245,7 @@ const KindredSpiritsList = () => {
           Loading...
       </button>
       </Modal>
+    </div>)}
     </div>
   );
 };

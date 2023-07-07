@@ -92,13 +92,13 @@ useEffect(() => {
                   A list of all the <span className='font-bold'>{totalOwnedNFTs}</span> NFTs that you own🤓. Click the button to see who
                   owns the same NFTs as you!
                 </p>
-                {/* <button
+                <button
                   type='button'
                   className='block rounded-md bg-gradient-to-r from-purple-500 to-pink-600 px-3 py-2 mt-4 text-center text-sm font-semibold text-white shadow-smfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
                   onClick={handleSeeMoreClick}
                 >
                   Show my Kindred Spirits
-                </button> */}
+                </button>
               </div>
             </div>
             <div className='mt-8 flow-root'>
@@ -191,7 +191,7 @@ useEffect(() => {
                   {totalNfts && totalNfts.length > numNftsToShow && (
                 <button
                   type='button'
-                  className='ml-36 block rounded-md bg-gradient-to-r from-purple-500 to-pink-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-smfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
+                  className='ml-36 md:ml-0 block rounded-md bg-gradient-to-r from-purple-500 to-pink-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-smfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
                   onClick={handleSeeMoreClick}
                 >
                   {isLoading ? 'Loading...' : 'See More'}
