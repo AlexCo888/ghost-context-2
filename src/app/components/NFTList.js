@@ -25,7 +25,7 @@ const NFTs = () => {
           // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
-  console.log(nfts.ownedNfts);
+  // console.log(nfts.ownedNfts);
 
   return (
     <div>

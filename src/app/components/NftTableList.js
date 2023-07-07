@@ -76,7 +76,7 @@ useEffect(() => {
     }
   };
 
-    console.log(nfts)
+    // console.log(nfts)
     return (
       <div>
         {isDisconnected && !ensAddress || isConnecting && !ensAddress ? (

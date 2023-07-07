@@ -144,10 +144,10 @@ const KindredSpiritsList = () => {
     const getNftsForOwners = async (addressOrEns) => {
       let nftAddressesArray = [];
       const nfts = await alchemy.nft.getNftsForOwner(addressOrEns);
-      console.log(nfts); 
+      // console.log(nfts); 
       const nftsArray = nfts.ownedNfts;
       nftsArray.map((nft) => nftAddressesArray.push(nft.contract.address));
-      console.log(nftAddressesArray);
+      // console.log(nftAddressesArray);
       await getOwnersForContracts(nftAddressesArray, addressOrEns);
     };
   
@@ -155,7 +155,7 @@ const KindredSpiritsList = () => {
       try {
         await getNftsForOwners(ensOrAddress);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
   
@@ -163,6 +163,8 @@ const KindredSpiritsList = () => {
       runGetOwnersForContracts(ensAddress || address);
     }
   }, [ensAddress, address]);
+
+  console.log(contractsInCommonModal)
 
   return (
     <div className="bg-gray-900">

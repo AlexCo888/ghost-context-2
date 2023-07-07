@@ -6,7 +6,6 @@ import { useEnsName } from 'wagmi'
 export default function NftModal({ onClose, address, count, contractsInCommon, noClose }) {
   const [open, setOpen] = useState(true);
 
-
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose} static noClose={noClose}>
@@ -67,12 +66,12 @@ export default function NftModal({ onClose, address, count, contractsInCommon, n
                <div className="text-gray-700 px-4 py-5 sm:px-6">
                   <h2 className='pb-2'>You have <span className='font-semibold'>{count}</span> contracts in common with <span className='font-semibold'>{<Address address={address} />}</span></h2>
                   <ul>
-                      {Object.entries(contractsInCommon).map((value) => (
-                        <div  key={value} className="flex justify-around items-center align-middle pt-1">
+                      {Object.entries(contractsInCommon).map(([index, address]) => (
+                        <div key={`${address}${index}`} className="flex justify-around items-center align-middle pt-1">
                         <li className="flex text-sm text-gray-500">
-                        <ShortAddress address={value} />
+                        <ShortAddress address={address} />
                         <a
-                          href={`https://etherscan.io/address/${value}`}
+                          href={`https://etherscan.io/address/${address}`}
                           className="ml-3 inline-block mx-2 text-purple-500 bg-purple-500/10 max-w-button ring-purple-500/30 rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset"
                         >
                   View on Etherscan

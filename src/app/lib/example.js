@@ -21,7 +21,7 @@ const main = async () => {
     while (true) {
       const result = await alchemy.nft.getOwnersForContract(address, {pageKey})
       owners.push(...result.owners);
-      console.log(result.pageKey)
+      // console.log(result.pageKey)
       if (!result.pageKey) {
        break;
     }
