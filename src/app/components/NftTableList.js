@@ -187,11 +187,11 @@ useEffect(() => {
                         })}
                     </tbody>
                   </table>
-                  <div className='flex mt-4 sm:ml-16 sm:mt-0 sm:flex-none items-center justify-center'>
+                  <div className='flex mt-4 sm:ml-16 sm:mt-0 sm:flex-none items-center max-sm:justify-start md:justify-center'>
                   {totalNfts && totalNfts.length > numNftsToShow && (
                 <button
                   type='button'
-                  className='block rounded-md bg-gradient-to-r from-purple-500 to-pink-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-smfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
+                  className='ml-36 block rounded-md bg-gradient-to-r from-purple-500 to-pink-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-smfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
                   onClick={handleSeeMoreClick}
                 >
                   {isLoading ? 'Loading...' : 'See More'}
