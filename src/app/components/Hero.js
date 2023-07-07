@@ -48,7 +48,7 @@ export default function Hero() {
           }}
         />
       </div>
-      <div className='mx-auto max-w-7xl px-6 pb-24 pt-10 sm:pb-32 lg:flex lg:px-8 lg:py-40'>
+      <div className='mx-auto max-w-7xl px-6 pb-12 pt-10 sm:pb-32 lg:flex lg:px-8 lg:py-12'>
         <div className='mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl lg:pt-8'>
           <img className='h-11' src='/ghost-emoji.svg' alt='Your Company' />
           <div className='mt-24 sm:mt-32 lg:mt-16'>
