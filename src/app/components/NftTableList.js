@@ -80,7 +80,9 @@ useEffect(() => {
     return (
       <div>
         {isDisconnected && !ensAddress || isConnecting && !ensAddress ? (
-          <div></div>
+          <div>
+            {/* <p>There is nothing here :)</p> */}
+          </div>
         ) : (
           <div className='px-4 sm:px-6 lg:px-8 bg-gray-900 pb-8'>
             <div className='sm:flex sm:items-center'>
