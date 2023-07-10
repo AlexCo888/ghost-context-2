@@ -1,3 +1,88 @@
+const KindredSpiritsList = () => {
+  const [sortedResult, setSortedResult] = useState({});
+  const [modalAddress, setModalAddress] = useState("");
+  const [countForModal, setCountForModal] = useState(null);
+  const [contractsInCommonModal, setContractsInCommonModal] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filteredContractsForModal, setFilteredContractsForModal] = useState({});
+  const [totalWallets, setTotalWallets] = useState(0);
+  const { ensAddress } = useContext(EnsContext);
+  const { address, isConnecting, isDisconnected } = useAccount();
+  const [isLoading, setIsLoading] = useState(false);
+  const [buttonText, setButtonText] = useState("Download Kindred Spirits");
+
+
+  const openModal = (address) => {
+    const { count, contractsInCommon } = filteredContractsForModal[address];
+    setModalAddress(address);
+    setCountForModal(count);
+    setContractsInCommonModal(contractsInCommon);
+    setIsModalOpen(true);
+  }
+
+  return (
+    <div>
+        <ul role="list" className="divide-y">
+          {Object.entries(filteredContractsForModal).slice(0, 20).map(([address, { count, contractsInCommon }]) => (
+            <li key={address} className="py-4">
+              <div className="flex items-center gap-x-3">
+                <img
+                  src="/kindredSpirit.png"
+                  alt={`Kindred Spirit with ${count} connections`}
+                  className="h-6 w-6 flex-none rounded-full bg-gray-800"
+                />
+                <h3 className="flex-auto truncate text-sm font-semibold leading-6 text-white">
+                  <Address address={address} />
+                </h3>
+              </div>
+              <p className="mt-3 truncate text-sm text-gray-500">
+                You have{" "}
+                <span className="text-gray-400">{count}</span> connections
+                with this address.
+              </p>
+              <a
+                href={`https://etherscan.io/address/${address}`}
+                className="inline-block mx-2 text-indigo-400 bg-indigo-400/10 max-w-button ring-indigo-400/30 rounded-full flex-none my-2 py-1 px-2 text-xs font-medium ring-1 ring-inset ml-auto"
+              >
+                View on Etherscan
+              </a>
+              <button onClick={() => downloadCsv(contractsInCommon)} className="inline-block mx-2 text-purple-400 bg-purple-400/10 max-w-button ring-purple-400/30 rounded-full flex-none my-2 py-1 px-2 text-xs font-medium ring-1 ring-inset ml-auto">
+                Download CSV
+              </button>
+              <button onClick={() => openModal(address)} className="inline-block mx-2 text-pink-400 bg-pink-400/10 max-w-button ring-pink-400/30 rounded-full flex-none my-2 py-1 px-2 text-xs font-medium ring-1 ring-inset ml-auto">
+                View More
+              </button>
+              {isModalOpen && <NftModal address={modalAddress} count={countForModal} contractsInCommon={contractsInCommonModal} onClose={() => setIsModalOpen(false)} noClose={() => setIsModalOpen(true)} />}
+            </li>
+          ))}
+        </ul>
+      </div>
+  );
+};
+
+const Address = ({ address }) => {
+  const { data, isError, isLoading } = useEnsName({
+    address: address,
+    chainId: 1,
+  });
+
+  return (
+    <>
+      {isLoading ? (
+        address
+      ) : isError ? (
+        address
+      ) : (
+        data || address
+      )}
+    </>
+  );
+};
+
+export default KindredSpiritsList;
+
+And the second one:
+
 import { Fragment, useState, useEffect   } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useEnsName } from 'wagmi'
@@ -9,7 +94,7 @@ const config = {
 };
 const alchemy = new Alchemy(config);
 
-export default function NftModal({ onClose, address, count, contractsInCommon }) {
+export default function NftModal({ onClose, address, count, contractsInCommon, noClose }) {
   const [open, setOpen] = useState(true);
   const [contractsList, setContractsList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +120,7 @@ export default function NftModal({ onClose, address, count, contractsInCommon })
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={onClose} static>
+      <Dialog as="div" className="relative z-10" onClose={onClose} static noClose={noClose}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -93,19 +178,15 @@ export default function NftModal({ onClose, address, count, contractsInCommon })
                <div className="text-gray-700 px-4 py-5 sm:px-6">
                   <h2 className='pb-2'>You have <span className='font-semibold'>{count}</span> contracts in common with <span className='font-semibold'>{<Address address={address} />}</span></h2>
                   {loading ? (
-                    <div className='flex justify-center items-center align-middle pt-1'>
-                      <p className='ml-3 mx-2 text-purple-500 bg-purple-500/10 max-w-button ring-purple-500/30 rounded-md flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset'>Loading...</p>
-                    </div>
+                    <p>Loading...</p>
                   ) : (
                     <ul>
                       {contractsList.map((contract, i) => (
-                        <li key={contract+i} className="flex justify-between items-center align-middle pt-1">
-                          <div className='text-xs'>
-                          {contract ||<ShortAddress address={contractsInCommon[i]} /> }
-                          </div>
+                        <li key={i} className="flex justify-around items-center align-middle pt-1">
+                          <span>{contract}</span>
                           <a
-                            href={`https://etherscan.io/address/${contractsInCommon[i]}`}
-                            className="ml-3 mx-2 text-purple-500 bg-purple-500/10 max-w-button ring-purple-500/30 rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset"
+                            href={`https://etherscan.io/address/${address}`}
+                            className="ml-3 inline-block mx-2 text-purple-500 bg-purple-500/10 max-w-button ring-purple-500/30 rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset"
                           >
                             View on Etherscan
                           </a>
@@ -148,7 +229,7 @@ const ShortAddress = ({address}) => {
     const shortAddress = `${prefix}...${suffix}`;
   
     return (
-      <div>{shortAddress}</div>
+      <p>{shortAddress}</p>
     )
   }
  

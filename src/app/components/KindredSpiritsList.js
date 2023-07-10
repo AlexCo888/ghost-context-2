@@ -45,22 +45,23 @@ const KindredSpiritsList = () => {
   const [modalAddress, setModalAddress] = useState("");
   const [countForModal, setCountForModal] = useState(null);
   const [contractsInCommonModal, setContractsInCommonModal] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [filteredContractsForModal, setFilteredContractsForModal] = useState({});
   const [totalWallets, setTotalWallets] = useState(0);
   const { ensAddress } = useContext(EnsContext);
   const { address, isConnecting, isDisconnected } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
   const [buttonText, setButtonText] = useState("Download Kindred Spirits");
-
+  
+  const [selectedModal, setSelectedModal] = useState(null);
 
   const openModal = (address) => {
     const { count, contractsInCommon } = filteredContractsForModal[address];
     setModalAddress(address);
     setCountForModal(count);
     setContractsInCommonModal(contractsInCommon);
-    setIsModalOpen(true);
-  }
+    setSelectedModal(address);
+  };
 
   const downloadCsv = (contractsInCommon) => {
     console.log('downloadCsv called');
@@ -245,13 +246,18 @@ const KindredSpiritsList = () => {
               <button onClick={() => openModal(address)} className="inline-block mx-2 text-pink-400 bg-pink-400/10 max-w-button ring-pink-400/30 rounded-full flex-none my-2 py-1 px-2 text-xs font-medium ring-1 ring-inset ml-auto">
                 View More
               </button>
-              {isModalOpen && <NftModal address={modalAddress} count={countForModal} contractsInCommon={contractsInCommonModal} onClose={() => setIsModalOpen(false)} noClose={() => setIsModalOpen(true)} />}
-            </li>
+              {selectedModal === address && (
+              <NftModal
+                address={modalAddress}
+                count={countForModal}
+                contractsInCommon={contractsInCommonModal}
+                onClose={() => setSelectedModal(null)}
+              />
+            )}
+          </li>
           ))}
         </ul>
       </div>
-      {isModalOpen && <NftModal address={modalAddress} count={countForModal} contractsInCommon={contractsInCommonModal} onClose={() => setIsModalOpen(false)} noClose={() => setIsModalOpen(true)} />}
-
       <Modal 
         isOpen={isLoading} 
         onRequestClose={() => setIsLoading(false)}
