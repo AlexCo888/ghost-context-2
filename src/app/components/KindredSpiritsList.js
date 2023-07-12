@@ -63,12 +63,38 @@ const KindredSpiritsList = () => {
     setSelectedModal(address);
   };
 
-  const downloadCsv = (contractsInCommon) => {
-    console.log('downloadCsv called');
-    const csv = Object.entries(contractsInCommon).map(([key, value]) => `${Number(key)+1},${value}`).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    saveAs(blob, 'contractsInCommon.csv');
-  }
+  const downloadCsv = async (contractsInCommon, address) => {
+    let contractsInCsv = [];
+    let ensNames = [];
+    const walletAddress = address;
+    const ensContractAddress = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85";
+    const nfts = await alchemy.nft.getNftsForOwner(walletAddress, {
+      contractAddresses: [ensContractAddress],
+    });
+    console.log(nfts)
+  
+    for (const contract of contractsInCommon) {
+      const response = await alchemy.nft.getContractMetadata(contract);
+      contractsInCsv.push(response.name || contract); // Use contract address if name is undefined
+    }
+  
+    for (const nft of nfts.ownedNfts) {
+      ensNames.push(nft.title);
+    }
+  
+    const csvRows = contractsInCsv.map((contract, i) => {
+      const commonContract = i < ensNames.length ? ensNames[i] : "";
+      return `"${commonContract}",${Number(i) + 1},"${contract.replace(/"/g, '""')}"`; // Escape double quotes and encode as UTF-8
+    });
+  
+    const header = "Contracts in Common with,NFT,Contract Name";
+    const csvContent = `${header}\n${csvRows.join("\n")}`;
+    const csvData = "\uFEFF" + csvContent; // Add UTF-8 BOM (Byte Order Mark)
+    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, "contracts-in-common.csv");
+  };
+  
+  
 
   
   async function downloadKindredCSV() {
@@ -240,7 +266,7 @@ const KindredSpiritsList = () => {
               >
                 View on Etherscan
               </a>
-              <button onClick={() => downloadCsv(contractsInCommon)} className="inline-block mx-2 text-purple-400 bg-purple-400/10 max-w-button ring-purple-400/30 rounded-full flex-none my-2 py-1 px-2 text-xs font-medium ring-1 ring-inset ml-auto">
+              <button onClick={() => downloadCsv(contractsInCommon, address)} className="inline-block mx-2 text-purple-400 bg-purple-400/10 max-w-button ring-purple-400/30 rounded-full flex-none my-2 py-1 px-2 text-xs font-medium ring-1 ring-inset ml-auto">
                 Download CSV
               </button>
               <button onClick={() => openModal(address)} className="inline-block mx-2 text-pink-400 bg-pink-400/10 max-w-button ring-pink-400/30 rounded-full flex-none my-2 py-1 px-2 text-xs font-medium ring-1 ring-inset ml-auto">
