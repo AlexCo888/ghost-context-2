@@ -99,12 +99,12 @@ const KindredSpiritsList = () => {
   
   async function downloadKindredCSV() {
     setButtonText("Downloading...");
-    const dataPromises = Object.entries(filteredContractsForModal).slice(0, 150).map(async ([address, contract]) => {
+    const dataPromises = Object.entries(filteredContractsForModal).slice(0, 50).map(async ([address, contract]) => {
       const count = contract.count || 0;
       const contractsInCommon = contract.contractsInCommon || [];
       const contractsInCsv = []
-      for (const contract of contractsInCommon) {
-        const response = await alchemy.nft.getContractMetadata(contract)
+      for (const contractInCommon of contractsInCommon) {
+        const response = await alchemy.nft.getContractMetadata(contractInCommon)
         contractsInCsv.push(response.name)
       }
       // Try to resolve the ENS name for the address. If it doesn't exist, use the original address.
@@ -139,20 +139,19 @@ const KindredSpiritsList = () => {
       for (const nftAddress of nftAddressesArray) {
         let owners = [];
         let response = await alchemy.nft.getOwnersForContract(nftAddress);
-        owners.push(...response.owners);
+        owners = owners.concat(response.owners);
     
         while (response.pageKey) {
             response = await alchemy.nft.getOwnersForContract(nftAddress, { pageKey: response.pageKey });
-            owners.push(...response.owners);
+            if (owners.length > 150000) {
+                break;  // break out of the loop entirely
+            }
+            owners = owners.concat(response.owners);
         }
         totalWalletsLocal += owners.length;
-  
+    
         owners.forEach((owner) => {
-          if (ownersCount[owner]) {
-            ownersCount[owner]++;
-          } else {
-            ownersCount[owner] = 1;
-          }
+          ownersCount[owner] = ownersCount[owner] ? ownersCount[owner] + 1 : 1;
           if (contractsInCommon[owner]) {
             contractsInCommon[owner].count++;
             contractsInCommon[owner].contractsInCommon.push(nftAddress);
@@ -160,23 +159,25 @@ const KindredSpiritsList = () => {
             contractsInCommon[owner] = { count: 1, contractsInCommon: [nftAddress] };
           }
         });
-  
-        // Clear owners array
+        // clear owners array
         owners = null;
-      }
+    }
+    
   
       // Set the state variable here once with the total wallets count
       setTotalWallets(totalWalletsLocal);
   
       const filteredResult = Object.fromEntries(
-        Object.entries(ownersCount).filter(([_, value]) => value >= 10)
+        Object.entries(ownersCount)
+        // .filter(([_, value]) => value >= 10)
+        .slice(0, 50)
       );
   
       const filteredContractsInCommon = Object.fromEntries(
         Object.entries(contractsInCommon)
-          .filter(([_, value]) => value.count >= 10)
+          // .filter(([_, value]) => value.count >= 10)
           .sort((a, b) => b[1].count - a[1].count)
-          .slice(0, 100)
+          .slice(0, 50)
       );
   
       delete filteredResult[
