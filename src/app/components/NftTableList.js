@@ -91,15 +91,16 @@ useEffect(() => {
                   Owned NFTs
                 </h2>
                 <p className='mt-2 text-md text-gray-200'>
-                  A list of <span className='font-bold'>{totalOwnedNFTs}</span> owned by this address. Click the button to summon the kindred spirits of this address.
+                  A list of <span className='font-bold'>{totalOwnedNFTs}</span> NFTs owned by this address. 
+                  {/* Click the button to summon the kindred spirits of this address. */}
                 </p>
-                <button
+                {/* <button
                   type='button'
                   className='rounded-md bg-gradient-to-r from-purple-500 to-pink-600 px-3 py-2 mt-4 text-center text-sm font-semibold text-white shadow-smfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
                   onClick={handleSeeMoreClick}
                 >
                   Show my Kindred Spirits
-                </button>
+                </button> */}
               </div>
             </div>
             <div className='mt-8 flow-root'>

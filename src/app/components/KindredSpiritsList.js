@@ -51,6 +51,7 @@ const KindredSpiritsList = () => {
   const { ensAddress } = useContext(EnsContext);
   const { address, isConnecting, isDisconnected } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
+  const [totalContracts, setTotalContracts] = useState(null);
   const [buttonText, setButtonText] = useState("Download Kindred Spirits");
   
   const [selectedModal, setSelectedModal] = useState(null);
@@ -100,35 +101,37 @@ const KindredSpiritsList = () => {
   async function downloadKindredCSV() {
     setButtonText("Downloading...");
     const dataPromises = Object.entries(filteredContractsForModal).slice(0, 50).map(async ([address, contract]) => {
-      const count = contract.count || 0;
-      const contractsInCommon = contract.contractsInCommon || [];
-      const contractsInCsv = []
-      for (const contractInCommon of contractsInCommon) {
-        const response = await alchemy.nft.getContractMetadata(contractInCommon)
-        contractsInCsv.push(response.name)
-      }
-      // Try to resolve the ENS name for the address. If it doesn't exist, use the original address.
-      let ensName = address;
-      try {
-        ensName = await provider.lookupAddress(address);
-      } catch (error) {
-        console.log(`No ENS name found for address: ${address}`);
-      }
-      
-      return [ensName || address, count, contractsInCsv.join(';')];
+        const count = contract.count || 0;
+        const contractsInCommon = contract.contractsInCommon || [];
+
+        // Initiate all requests at once, then wait for all to finish
+        const contractResponses = await Promise.all(contractsInCommon.map(c => alchemy.nft.getContractMetadata(c)));
+        const contractsInCsv = contractResponses.map(response => response.name);
+
+        // Try to resolve the ENS name for the address. If it doesn't exist, use the original address.
+        let ensName = address;
+        try {
+            ensName = await provider.lookupAddress(address);
+        } catch (error) {
+            console.log(`No ENS name found for address: ${address}`);
+        }
+
+        return [ensName, count, contractsInCsv.join(';')];
     });
-  
+
     const data = await Promise.all(dataPromises);
     const csv = 'EnsName | Address,Number of Connections,Contracts in Common\n' + data.map(row => row.join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     saveAs(blob, 'kindred-spirits.csv');
     setButtonText("Download Kindred Spirits");
-  }
+}
+
   
   
   useEffect(() => {
     const getOwnersForContracts = async (nftAddressesArray, addressOrEns) => {
       setIsLoading(true); // show the modal
+      setTotalContracts(nftAddressesArray.length);
       const targetAddress = addressOrEns;
       let ownersCount = {};
       let contractsInCommon = {};
@@ -235,7 +238,7 @@ const KindredSpiritsList = () => {
         Kindred Spirits
       </h2>
       <h3 className="mb-4 text-2xl text-center font-semibold leading-none tracking-tight text-gray-300 md:text-xl sm:px-15 lg:px-32">
-      We analyzed {totalWallets.toLocaleString()} unique wallet addresses across this collection of NFTs.🤯 Here is a list of {Object.entries(filteredContractsForModal).slice(0, 20).length} addresses based on the number of contracts held in common. 👻
+      We analyzed {totalWallets.toLocaleString()} unique wallet addresses across the {totalContracts} NFTs owned by this address and summoned {Object.entries(filteredContractsForModal).slice(0, 20).length} kindred spirits 👻✨
       </h3>
       <div className="flex justify-center ">
       <button onClick={downloadKindredCSV} className="mx-2 text-teal-200 bg-teal-200/10 max-w-button ring-teal-200/30 rounded-xl flex-none mb-4 py-2 px-4 text-sm font-medium ring-1 ring-inset">
@@ -258,7 +261,7 @@ const KindredSpiritsList = () => {
               </div>
               <p className="mt-3 truncate text-sm text-gray-500">
                 You have{" "}
-                <span className="text-gray-400">{count}</span> connections
+                <span className="text-gray-400">{count}</span> NFTs in common
                 with this address.
               </p>
               <a
