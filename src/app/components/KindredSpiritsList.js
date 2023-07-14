@@ -115,7 +115,7 @@ const KindredSpiritsList = () => {
         console.log(`No ENS name found for address: ${address}`);
       }
       
-      return [ensName, count, contractsInCsv.join(';')];
+      return [ensName || address, count, contractsInCsv.join(';')];
     });
   
     const data = await Promise.all(dataPromises);
@@ -234,8 +234,8 @@ const KindredSpiritsList = () => {
       <h2 className="mb-4 text-4xl text-center font-bold leading-none tracking-tight text-white md:text-3xl lg:text-4xl">
         Kindred Spirits
       </h2>
-      <h3 className="mb-4 text-2xl text-center font-semibold leading-none tracking-tight text-gray-300 md:text-xl">
-        There are {totalWallets.toLocaleString()} unique wallet addresses across the contracts associated with your owned NFTs.
+      <h3 className="mb-4 text-2xl text-center font-semibold leading-none tracking-tight text-gray-300 md:text-xl sm:px-15 lg:px-32">
+      We analyzed {totalWallets.toLocaleString()} unique wallet addresses across this collection of NFTs.🤯 Here is a list of {Object.entries(filteredContractsForModal).slice(0, 20).length} addresses based on the number of contracts held in common. 👻
       </h3>
       <div className="flex justify-center ">
       <button onClick={downloadKindredCSV} className="mx-2 text-teal-200 bg-teal-200/10 max-w-button ring-teal-200/30 rounded-xl flex-none mb-4 py-2 px-4 text-sm font-medium ring-1 ring-inset">
@@ -303,9 +303,9 @@ const KindredSpiritsList = () => {
           }
         }}
       >
-        <h2 className="px-10 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 text-center font-bold text-lg">Please wait for a moment...</h2>
-        <p className="px-10 text-center font-light text-slate-800 text-base">😊We are summoning kindred spirits and looking deeply into each NFT contract that you own❤️</p>
-        <p className="px-10 text-center font-light text-slate-800 text-base">This might take some minutes... Be patient🥳</p>
+        <h2 className="px-10 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 text-center font-bold text-lg">Summoning Kindred Spirits</h2>🪬
+        <p className="px-10 text-center font-light text-slate-800 text-base">Please be patient, we promise not to ghost you.</p>
+        <p className="px-10 text-center font-light text-slate-800 text-base">The app may take a while to return results depending on the number of contracts and holders being analyzed. 👻</p>
         <button disabled type="button" className="mt-10 text-white bg-gradient-to-r from-purple-500 to-pink-600 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 items-center">
           <svg aria-hidden="true" role="status" className="inline w-4 h-4 mr-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>

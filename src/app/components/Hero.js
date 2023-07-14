@@ -69,8 +69,7 @@ export default function Hero() {
             From Collections to Connections
           </h1>
           <p className='mt-6 text-lg leading-8 text-gray-300'>
-            Unite with like-minded collectors through shared collections and go
-            from collections to connections👻.
+          Summon a list of kindred spirits based on NFTs held in common✨👻✨
           </p>
           <div className='mt-10 flex items-center gap-x-6'>
             <Web3Button />

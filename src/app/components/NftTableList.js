@@ -85,22 +85,21 @@ useEffect(() => {
           </div>
         ) : (
           <div className='px-4 sm:px-6 lg:px-8 bg-gray-900 pb-8'>
-            <div className='sm:flex sm:items-center'>
+            <div className='sm:flex sm:items-center justify-center text-center'>
               <div className='sm:flex-auto'>
-                <h1 className='text-base font-semibold leading-6 text-white'>
+                <h2 className='pt-20 text-mb-4 text-4xl text-center font-bold leading-none tracking-tight text-white md:text-3xl lg:text-4xl'>
                   Owned NFTs
-                </h1>
+                </h2>
                 <p className='mt-2 text-md text-gray-200'>
-                  A list of all the <span className='font-bold'>{totalOwnedNFTs}</span> NFTs that you own🤓. Click the button to see who
-                  owns the same NFTs as you!
+                  A list of <span className='font-bold'>{totalOwnedNFTs}</span> owned by this address. Click the button to summon the kindred spirits of this address.
                 </p>
-                {/* <button
+                <button
                   type='button'
-                  className='block rounded-md bg-gradient-to-r from-purple-500 to-pink-600 px-3 py-2 mt-4 text-center text-sm font-semibold text-white shadow-smfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
+                  className='rounded-md bg-gradient-to-r from-purple-500 to-pink-600 px-3 py-2 mt-4 text-center text-sm font-semibold text-white shadow-smfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
                   onClick={handleSeeMoreClick}
                 >
                   Show my Kindred Spirits
-                </button> */}
+                </button>
               </div>
             </div>
             <div className='mt-8 flow-root'>

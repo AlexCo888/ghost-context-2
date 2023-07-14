@@ -34,9 +34,9 @@ export default function App() {
       <WagmiConfig config={wagmiConfig}>
       <EnsContext.Provider value={{ ensAddress, setEnsAddress }}>
         <Hero />
+        <KindredSpiritsList />
         <TableList />
         {/* <MintedNfts /> */}
-        <KindredSpiritsList />
         </EnsContext.Provider>
       </WagmiConfig>
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
