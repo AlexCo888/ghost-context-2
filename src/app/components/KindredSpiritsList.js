@@ -51,6 +51,8 @@ const KindredSpiritsList = () => {
   const { ensAddress } = useContext(EnsContext);
   const { address, isConnecting, isDisconnected } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
+  const [totalOwnedNFTs, setTotalOwnedNFTs] = useState(null);
+  const [totalNfts, setTotalNfts] = useState([]);
   const [totalContracts, setTotalContracts] = useState(null);
   const [buttonText, setButtonText] = useState("Download Kindred Spirits");
   
@@ -111,7 +113,7 @@ const KindredSpiritsList = () => {
         // Try to resolve the ENS name for the address. If it doesn't exist, use the original address.
         let ensName = address;
         try {
-            ensName = await provider.lookupAddress(address);
+            ensName = await provider.lookupAddress(address) || address;
         } catch (error) {
             console.log(`No ENS name found for address: ${address}`);
         }
@@ -146,7 +148,7 @@ const KindredSpiritsList = () => {
     
         while (response.pageKey) {
             response = await alchemy.nft.getOwnersForContract(nftAddress, { pageKey: response.pageKey });
-            if (owners.length > 150000) {
+            if (owners.length > 80000) {
                 break;  // break out of the loop entirely
             }
             owners = owners.concat(response.owners);
@@ -200,18 +202,37 @@ const KindredSpiritsList = () => {
   
       setSortedResult(sortedResult);
       setFilteredContractsForModal(sortedResultContractsInCommon);
+      console.log(sortedResultContractsInCommon)
       setIsLoading(false); // hide the modal
     };
   
     const getNftsForOwners = async (addressOrEns) => {
       let nftAddressesArray = [];
-      const nfts = await alchemy.nft.getNftsForOwner(addressOrEns);
-      // console.log(nfts); 
-      const nftsArray = nfts.ownedNfts;
-      nftsArray.map((nft) => nftAddressesArray.push(nft.contract.address));
-      // console.log(nftAddressesArray);
+      let ownedNfts = [];
+      let currentPageKey = null;
+        
+      do {
+        try {
+          const fetchedNfts = await alchemy.nft.getNftsForOwner(addressOrEns, {
+            pageKey: currentPageKey,
+          });
+    
+          ownedNfts = [...ownedNfts, ...fetchedNfts.ownedNfts];
+          currentPageKey = fetchedNfts.pageKey;
+        } catch (error) {
+          console.error("Error while fetching NFTs:", error);
+          break;
+        }
+      } while (currentPageKey);
+    
+      setTotalOwnedNFTs(ownedNfts.length.toLocaleString());
+      setTotalNfts(ownedNfts);    
+      // Extract the contract addresses from the ownedNfts array
+      nftAddressesArray = ownedNfts.map((nft) => nft.contract.address);
+    
       await getOwnersForContracts(nftAddressesArray, addressOrEns);
     };
+    
   
     const runGetOwnersForContracts = async (ensOrAddress) => {
       try {
@@ -226,7 +247,6 @@ const KindredSpiritsList = () => {
     }
   }, [ensAddress, address]);
 
-  console.log(contractsInCommonModal)
 
   return (
     <div>
@@ -238,7 +258,7 @@ const KindredSpiritsList = () => {
         Kindred Spirits
       </h2>
       <h3 className="mb-4 text-2xl text-center font-semibold leading-none tracking-tight text-gray-300 md:text-xl sm:px-15 lg:px-32">
-      We analyzed {totalWallets.toLocaleString()} unique wallet addresses across the {totalContracts} NFTs owned by this address and summoned {Object.entries(filteredContractsForModal).slice(0, 20).length} kindred spirits 👻✨
+      We analyzed {totalWallets.toLocaleString()} unique wallet addresses across the {totalOwnedNFTs} NFTs owned by this address and summoned {Object.entries(filteredContractsForModal).slice(0, 20).length} kindred spirits 👻✨
       </h3>
       <div className="flex justify-center ">
       <button onClick={downloadKindredCSV} className="mx-2 text-teal-200 bg-teal-200/10 max-w-button ring-teal-200/30 rounded-xl flex-none mb-4 py-2 px-4 text-sm font-medium ring-1 ring-inset">
