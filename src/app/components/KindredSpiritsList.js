@@ -16,28 +16,6 @@ const config = {
 };
 const alchemy = new Alchemy(config);
 
-async function lookupEnsName(address) {
-  try {
-    const name = await provider.lookupAddress(address);
-    return name;
-  } catch (error) {
-    console.error("Error looking up ENS name: ", error);
-  }
-}
-
-async function getEnsNames(sortedResult) {
-  const ensNames = {};
-  for (const address in sortedResult) {
-    const name = await lookupEnsName(address);
-    if (name) {
-      ensNames[name] = sortedResult[address];
-    } else {
-      ensNames[address] = sortedResult[address];
-    }
-  }
-  return ensNames;
-}
-
 Modal.setAppElement('#root'); 
 
 const KindredSpiritsList = () => {
