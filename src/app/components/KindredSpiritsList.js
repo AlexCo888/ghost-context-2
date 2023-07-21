@@ -102,12 +102,15 @@ const KindredSpiritsList = () => {
   
   async function downloadKindredCSV() {
     setButtonText("Downloading...");
-    const dataPromises = Object.entries(filteredContractsForModal).slice(0, 10).map(async ([address, contract]) => {
+    const dataPromises = Object.entries(filteredContractsForModal).slice(0, 20).map(async ([address, contract]) => {
         const count = contract.count || 0;
         const contractsInCommon = contract.contractsInCommon || [];
 
         // Initiate all requests at once, then wait for all to finish
-        const contractResponses = await Promise.all(contractsInCommon.map(c => alchemy.nft.getContractMetadata(c)));
+        const contractResponses = await Promise.all(contractsInCommon.map(c => alchemy.nft.getContractMetadata(c).catch(error => {
+            console.log(`Error getting contract metadata for ${c}: ${error.message}`);
+            return { name: 'Unknown' };
+        })));
         const contractsInCsv = contractResponses.map(response => response.name);
 
         // Try to resolve the ENS name for the address. If it doesn't exist, use the original address.
