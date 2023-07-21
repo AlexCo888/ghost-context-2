@@ -11,7 +11,7 @@ import { EnsContext } from './EnsContext';
 const provider = ethers.getDefaultProvider();
 
 const config = {
-  apiKey: "jOxnwjsrNk-e--MfwXyELFi6Lw45PVgi",
+  apiKey: process.env.ALCHEMY_API_KEY,
   network: Network.ETH_MAINNET,
 };
 const alchemy = new Alchemy(config);
