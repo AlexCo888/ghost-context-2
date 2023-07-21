@@ -102,7 +102,7 @@ const KindredSpiritsList = () => {
   
   async function downloadKindredCSV() {
     setButtonText("Downloading...");
-    const dataPromises = Object.entries(filteredContractsForModal).slice(0, 20).map(async ([address, contract]) => {
+    const dataPromises = Object.entries(filteredContractsForModal).slice(0, 10).map(async ([address, contract]) => {
         const count = contract.count || 0;
         const contractsInCommon = contract.contractsInCommon || [];
 
