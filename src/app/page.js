@@ -36,7 +36,7 @@ export default function App() {
         <Hero />
         <KindredSpiritsList />
         <TableList />
-        <MintedNfts />
+        {/* <MintedNfts /> */}
         </EnsContext.Provider>
       </WagmiConfig>
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
