@@ -109,6 +109,16 @@ const KindredSpiritsList = () => {
     setButtonText("Download Kindred Spirits");
 }
 
+useEffect(() => {
+  // Add or remove the class based on the isLoading state
+  if (isLoading) {
+    document.body.classList.add("overflow-hidden");
+  } else {
+    document.body.classList.remove("overflow-hidden");
+  }
+}, [isLoading]);
+
+
   
   
   useEffect(() => {
@@ -291,7 +301,6 @@ const KindredSpiritsList = () => {
       </div>
       <Modal 
         isOpen={isLoading} 
-        onRequestClose={() => setIsLoading(false)}
         style={{
           content : {
             display                 : 'flex',
@@ -303,7 +312,7 @@ const KindredSpiritsList = () => {
             right                 : 'auto',
             bottom                : 'auto',
             marginRight           : '-50%',
-            transform             : 'translate(-50%, -50%)'
+            transform             : 'translate(-50%, -50%)',
           }
         }}
       >
