@@ -123,12 +123,17 @@ useEffect(() => {
   
   useEffect(() => {
     const getOwnersForContracts = async (nftAddressesArray, addressOrEns) => {
+      let targetAddress;
       setIsLoading(true); // show the modal
       setTotalContracts(nftAddressesArray.length);
-      const targetAddress = addressOrEns;
+      if (!addressOrEns.startsWith("0x")) {
+        targetAddress = await alchemy.core.resolveName(addressOrEns);
+        console.log(targetAddress)
+    } else {
+      targetAddress = addressOrEns;
+    }
       let ownersCount = {};
       let contractsInCommon = {};
-  
       // Local variable for total wallets
       let totalWalletsLocal = 0;
   
@@ -237,7 +242,6 @@ useEffect(() => {
       runGetOwnersForContracts(ensAddress || address);
     }
   }, [ensAddress, address]);
-
 
   return (
     <div>
