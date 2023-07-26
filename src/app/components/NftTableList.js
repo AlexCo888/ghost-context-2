@@ -96,7 +96,7 @@ useEffect(() => {
   
 
   function toggleAll() {
-    setSelectedNFTs(checked || indeterminate ? [] : nfts)
+    setSelectedNFTs(checked || indeterminate ? [] : totalNfts)
     setChecked(!checked && !indeterminate)
     setIndeterminate(false)
   }
