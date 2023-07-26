@@ -13,7 +13,6 @@ import MintedNfts from './components/MintedNfts';
 import KindredSpiritsList from './components/KindredSpiritsList';
 import { EnsContext } from './components/EnsContext'; // Import the context
 import { useState } from 'react'; // Import the context
-import Example from './components/EXAMPLE';
 
 export default function App() {
   const chains = [goerli, arbitrum, mainnet, polygon];
@@ -38,7 +37,6 @@ export default function App() {
         <KindredSpiritsList />
         <TableList />
         {/* <MintedNfts /> */}
-        {/* <Example/> */}
         </EnsContext.Provider>
       </WagmiConfig>
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
