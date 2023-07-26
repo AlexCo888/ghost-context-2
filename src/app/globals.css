@@ -25,3 +25,29 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.nice-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 3px;
+}
+
+.nice-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(54, 54, 54, 0.2);
+  border-radius: 10px;
+}
+
+.nice-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(54, 54, 54, 0.5);
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.nice-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: thin;  /* Firefox */
+}
+
+.nice-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+

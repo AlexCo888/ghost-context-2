@@ -18,11 +18,9 @@
     useEffect(() => {
       try {
         if (!isError && !isLoading && data && !ensNameOrAddress.startsWith('0x')) {
-          console.log('Setting ENS address:', data);
           setEnsAddress(data);
         }
         if (!addressError && !isLoadingAddress && !data && dataAddress && ensNameOrAddress.startsWith('0x')) {
-          console.log('Setting Ethereum address:', dataAddress);
           setEnsAddress(dataAddress);
         }
       } catch (error) {

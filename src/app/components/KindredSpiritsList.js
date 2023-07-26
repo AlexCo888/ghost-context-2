@@ -52,7 +52,6 @@ const KindredSpiritsList = () => {
     const nfts = await alchemy.nft.getNftsForOwner(walletAddress, {
       contractAddresses: [ensContractAddress],
     });
-    console.log(nfts)
   
     for (const contract of contractsInCommon) {
       const response = await alchemy.nft.getContractMetadata(contract);
@@ -86,7 +85,7 @@ const KindredSpiritsList = () => {
 
         // Initiate all requests at once, then wait for all to finish
         const contractResponses = await Promise.all(contractsInCommon.map(c => alchemy.nft.getContractMetadata(c).catch(error => {
-            console.log(`Error getting contract metadata for ${c}: ${error.message}`);
+            console.error(`Error getting contract metadata for ${c}: ${error.message}`);
             return { name: 'Unknown' };
         })));
         const contractsInCsv = contractResponses.map(response => response.name);
@@ -96,7 +95,7 @@ const KindredSpiritsList = () => {
         try {
             ensName = await provider.lookupAddress(address) || address;
         } catch (error) {
-            console.log(`No ENS name found for address: ${address}`);
+            console.error(`No ENS name found for address: ${address}`);
         }
 
         return [ensName, count, contractsInCsv.join(';')];
@@ -128,7 +127,6 @@ useEffect(() => {
       setTotalContracts(nftAddressesArray.length);
       if (!addressOrEns.startsWith("0x")) {
         targetAddress = await alchemy.core.resolveName(addressOrEns);
-        console.log(targetAddress)
     } else {
       targetAddress = addressOrEns;
     }
@@ -198,7 +196,6 @@ useEffect(() => {
   
       setSortedResult(sortedResult);
       setFilteredContractsForModal(sortedResultContractsInCommon);
-      console.log(sortedResultContractsInCommon)
       setIsLoading(false); // hide the modal
     };
   
