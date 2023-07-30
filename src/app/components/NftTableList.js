@@ -2,7 +2,8 @@ import { useState, useEffect, useContext, useRef,useLayoutEffect } from 'react';
 import { Alchemy, Network } from 'alchemy-sdk';
 import NftDescription from './NftDescription';
 import { useAccount } from 'wagmi';
-import { EnsContext } from './EnsContext';
+import { EnsContext } from './context/EnsContext';
+import { KindredButtonContext } from './context/KindredButtonContext';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -21,7 +22,13 @@ export default function NftTableList() {
   const [checked, setChecked] = useState(false)
   const [indeterminate, setIndeterminate] = useState(false)
   const [selectedNFTs, setSelectedNFTs] = useState([])
-
+  const {
+    selectedNFTsContext,
+    setSelectedNFTsContext,
+    triggerKindredSpirits,
+    setTriggerKindredSpirits,
+  } = useContext(KindredButtonContext);
+  
   const config = {
     apiKey: process.env.ALCHEMY_API_KEY,
     network: Network.ETH_MAINNET,
@@ -92,6 +99,7 @@ useEffect(() => {
     if (checkbox.current) {
       checkbox.current.indeterminate = isIndeterminate;
     }
+    setSelectedNFTsContext(selectedNFTs)
   }, [selectedNFTs, nfts.length]);
   
 
@@ -100,6 +108,11 @@ useEffect(() => {
     setChecked(!checked && !indeterminate)
     setIndeterminate(false)
   }
+  
+  const handleButtonClick = () => {
+    setTriggerKindredSpirits(true);
+  }
+  
 
     return (
       <div>
@@ -133,6 +146,7 @@ useEffect(() => {
                 {selectedNFTs.length > 0 && (
                 <div className="absolute left-14 top-0 flex h-12 items-center space-x-3 bg-gray-900 sm:left-12">
                   <button
+                    onClick={handleButtonClick}
                     type="button"
                     className="inline-flex items-center rounded bg-gradient-to-r from-purple-500 to-pink-600 px-2 py-1 text-center text-sm font-semibold text-white shadow-smfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                   >
@@ -208,7 +222,7 @@ useEffect(() => {
                                 <td 
                                  className={classNames(
                                   'whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0',
-                                  selectedNFTs.includes(nft) ? 'text-indigo-600' : 'text-gray-900'
+                                  selectedNFTs.includes(nft) ? 'text-purple-600' : 'text-gray-900'
                                    )}>
                                   <div className='flex items-center'>
                                     <div className='h-11 w-11 flex-shrink-0'>

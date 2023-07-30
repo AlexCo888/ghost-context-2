@@ -1,6 +1,6 @@
   import { useEnsAddress, useEnsName } from 'wagmi';
   import { useState, useContext, useEffect } from 'react';
-  import { EnsContext } from './EnsContext'; // Import the context
+  import { EnsContext } from './context/EnsContext'; // Import the context
 
 
   export default function EnsInput() {
