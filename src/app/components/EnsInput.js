@@ -1,10 +1,17 @@
   import { useEnsAddress, useEnsName } from 'wagmi';
   import { useState, useContext, useEffect } from 'react';
   import { EnsContext } from './context/EnsContext'; // Import the context
+  import { KindredButtonContext } from './context/KindredButtonContext';
+
 
 
   export default function EnsInput() {
     const [ensNameOrAddress, setEnsNameOrAddress] = useState('');
+    const {
+      showKindredSpirits,
+      setShowKindredSpirits
+    } = useContext(KindredButtonContext);
+    
     const { data, isError, isLoading } = useEnsAddress({
       name: ensNameOrAddress,
       chainId: 1,
@@ -19,9 +26,11 @@
       try {
         if (!isError && !isLoading && data && !ensNameOrAddress.startsWith('0x')) {
           setEnsAddress(data);
+          setShowKindredSpirits(false);
         }
         if (!addressError && !isLoadingAddress && !data && dataAddress && ensNameOrAddress.startsWith('0x')) {
           setEnsAddress(dataAddress);
+          setShowKindredSpirits(false);
         }
       } catch (error) {
         console.error('Error setting address:', error);
@@ -33,6 +42,9 @@
       e.preventDefault();
       return ensNameOrAddress;
     };
+
+    console.log(showKindredSpirits)
+
 
     return (
       <div>

@@ -40,6 +40,9 @@ const KindredSpiritsList = () => {
     setSelectedNFTsContext,
     triggerKindredSpirits,
     setTriggerKindredSpirits,
+    ownedNFTs,
+    showKindredSpirits,
+    setShowKindredSpirits
   } = useContext(KindredButtonContext);
     
   const [selectedModal, setSelectedModal] = useState(null);
@@ -260,31 +263,21 @@ useEffect(() => {
 
   return (
     <div>
-         {isDisconnected && !ensAddress || isConnecting && !ensAddress ? (
+         {isDisconnected && !ensAddress || isConnecting && !ensAddress || !showKindredSpirits && selectedNFTsContext ? (
           <div></div>
         ) : (
     <div className="bg-gray-900">
       <h2 className="mb-4 text-4xl text-center font-bold leading-none tracking-tight text-white md:text-3xl lg:text-4xl">
         Kindred Spirits
       </h2>
-      {
-        !totalWallets && !totalOwnedNFTs  ? (
-          <h3 className="mb-4 text-2xl text-center font-semibold leading-none tracking-tight text-gray-300 md:text-xl sm:px-15 lg:px-32">
-      Please, in the next section, select the NFTs that you would like to analyze to find your kindred spirits 👻✨
+      <h3 className="mb-4 text-2xl text-center font-semibold leading-none tracking-tight text-gray-300 md:text-xl sm:px-15 lg:px-32">
+        We analyzed {totalWallets.toLocaleString()} unique wallet addresses across the {ownedNFTs.length} NFTs owned by this address and summoned {Object.entries(filteredContractsForModal).slice(0, 20).length} kindred spirits 👻✨
       </h3>
-        ) : (
-          <>
-            <h3 className="mb-4 text-2xl text-center font-semibold leading-none tracking-tight text-gray-300 md:text-xl sm:px-15 lg:px-32">
-        We analyzed {totalWallets.toLocaleString()} unique wallet addresses across the {totalOwnedNFTs} NFTs owned by this address and summoned {Object.entries(filteredContractsForModal).slice(0, 20).length} kindred spirits 👻✨
-            </h3>
-            <div className="flex justify-center ">
-            <button onClick={downloadKindredCSV} className="mx-2 text-teal-200 bg-teal-200/10 max-w-button ring-teal-200/30 rounded-xl flex-none mb-4 py-2 px-4 text-sm font-medium ring-1 ring-inset">
-                      {buttonText}
-            </button>
-            </div>
-          </>
-        )
-      }
+      <div className="flex justify-center ">
+        <button onClick={downloadKindredCSV} className="mx-2 text-teal-200 bg-teal-200/10 max-w-button ring-teal-200/30 rounded-xl flex-none mb-4 py-2 px-4 text-sm font-medium ring-1 ring-inset">
+          {buttonText}
+        </button>
+      </div>
       <div className="flex justify-center">
         <ul role="list" className="divide-y">
           {Object.entries(filteredContractsForModal).slice(0, 20).map(([address, { count, contractsInCommon }]) => (
