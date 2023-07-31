@@ -35,8 +35,8 @@ export default function App() {
     <>
       <WagmiConfig config={wagmiConfig}>
       <EnsContext.Provider value={{ ensAddress, setEnsAddress }}>
-        <Hero />
         <FetchDataProvider>
+        <Hero />
         <KindredSpiritsList />
         <TableList />
         </FetchDataProvider>

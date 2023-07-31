@@ -32,6 +32,10 @@ export default function NftTableList() {
     setSelectedNFTsContext,
     triggerKindredSpirits,
     setTriggerKindredSpirits,
+    ownedNFTs,
+    setOwnedNFTs,
+    setShowKindredSpirits,
+    showKindredSpirits
   } = useContext(KindredButtonContext);
   
   const config = {
@@ -126,7 +130,10 @@ useEffect(() => {
   }
   
   const handleButtonClick = () => {
+    setOwnedNFTs(selectedNFTs)
     setTriggerKindredSpirits(true);
+    setSelectedNFTs([])
+    setShowKindredSpirits(true)
   }
   
 
@@ -140,13 +147,17 @@ useEffect(() => {
           <div className='px-4 sm:px-6 lg:px-8 bg-gray-900 pb-8'>
             <div className='sm:flex sm:items-center justify-center text-center'>
               <div className='sm:flex-auto'>
-                <h2 className='pt-20 text-mb-4 text-4xl text-center font-bold leading-none tracking-tight text-white md:text-3xl lg:text-4xl'>
+                <h2 className='text-mb-4 text-4xl text-center font-bold leading-none tracking-tight text-white md:text-3xl lg:text-4xl'>
                   Owned NFTs
                 </h2>
+                <p className='mt-2 text-md text-gray-200'>
+                Please select the NFTs that you would like to analyze to find your kindred spirits 👻✨
+                </p>
                 <p className='mt-2 text-md text-gray-200'>
                   A list of <span className='font-bold'>{totalOwnedNFTs}</span> NFTs owned by this address. 
                   {/* Click the button to summon the kindred spirits of this address. */}
                 </p>
+                
                 {/* <button
                   type='button'
                   className='rounded-md bg-gradient-to-r from-purple-500 to-pink-600 px-3 py-2 mt-4 text-center text-sm font-semibold text-white shadow-smfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
