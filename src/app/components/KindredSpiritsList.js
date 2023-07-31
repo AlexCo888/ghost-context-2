@@ -6,7 +6,9 @@ import { ethers } from "ethers";
 import { saveAs } from 'file-saver';
 import { useAccount } from 'wagmi';
 import Modal from 'react-modal';
-import { EnsContext } from './EnsContext';
+import { EnsContext } from './context/EnsContext';
+import { KindredButtonContext } from './context/KindredButtonContext';
+
 
 const provider = ethers.getDefaultProvider();
 
@@ -33,7 +35,13 @@ const KindredSpiritsList = () => {
   const [totalNfts, setTotalNfts] = useState([]);
   const [totalContracts, setTotalContracts] = useState(null);
   const [buttonText, setButtonText] = useState("Download Kindred Spirits");
-  
+  const {
+    selectedNFTsContext,
+    setSelectedNFTsContext,
+    triggerKindredSpirits,
+    setTriggerKindredSpirits,
+  } = useContext(KindredButtonContext);
+    
   const [selectedModal, setSelectedModal] = useState(null);
 
   const openModal = (address) => {
@@ -52,7 +60,6 @@ const KindredSpiritsList = () => {
     const nfts = await alchemy.nft.getNftsForOwner(walletAddress, {
       contractAddresses: [ensContractAddress],
     });
-    console.log(nfts)
   
     for (const contract of contractsInCommon) {
       const response = await alchemy.nft.getContractMetadata(contract);
@@ -65,7 +72,7 @@ const KindredSpiritsList = () => {
   
     const csvRows = contractsInCsv.map((contract, i) => {
       const commonContract = i < ensNames.length ? ensNames[i] : "";
-      return `"${commonContract}",${Number(i) + 1},"${contract.replace(/"/g, '""')}"`; // Escape double quotes and encode as UTF-8
+      return `"${commonContract || address}",${Number(i) + 1},"${contract.replace(/"/g, '""')}"`; // Escape double quotes and encode as UTF-8
     });
   
     const header = "Contracts in Common with,NFT,Contract Name";
@@ -86,7 +93,7 @@ const KindredSpiritsList = () => {
 
         // Initiate all requests at once, then wait for all to finish
         const contractResponses = await Promise.all(contractsInCommon.map(c => alchemy.nft.getContractMetadata(c).catch(error => {
-            console.log(`Error getting contract metadata for ${c}: ${error.message}`);
+            console.error(`Error getting contract metadata for ${c}: ${error.message}`);
             return { name: 'Unknown' };
         })));
         const contractsInCsv = contractResponses.map(response => response.name);
@@ -96,7 +103,7 @@ const KindredSpiritsList = () => {
         try {
             ensName = await provider.lookupAddress(address) || address;
         } catch (error) {
-            console.log(`No ENS name found for address: ${address}`);
+            console.error(`No ENS name found for address: ${address}`);
         }
 
         return [ensName, count, contractsInCsv.join(';')];
@@ -128,7 +135,6 @@ useEffect(() => {
       setTotalContracts(nftAddressesArray.length);
       if (!addressOrEns.startsWith("0x")) {
         targetAddress = await alchemy.core.resolveName(addressOrEns);
-        console.log(targetAddress)
     } else {
       targetAddress = addressOrEns;
     }
@@ -198,35 +204,39 @@ useEffect(() => {
   
       setSortedResult(sortedResult);
       setFilteredContractsForModal(sortedResultContractsInCommon);
-      console.log(sortedResultContractsInCommon)
       setIsLoading(false); // hide the modal
+      setSelectedNFTsContext([])
     };
   
     const getNftsForOwners = async (addressOrEns) => {
       let nftAddressesArray = [];
-      let ownedNfts = [];
-      let currentPageKey = null;
+      // let ownedNfts = [];
+      // let currentPageKey = null;
         
-      do {
-        try {
-          const fetchedNfts = await alchemy.nft.getNftsForOwner(addressOrEns, {
-            pageKey: currentPageKey,
-          });
+      // do {
+      //   try {
+      //     const fetchedNfts = await alchemy.nft.getNftsForOwner(addressOrEns, {
+      //       pageKey: currentPageKey,
+      //     });
     
-          ownedNfts = [...ownedNfts, ...fetchedNfts.ownedNfts];
-          currentPageKey = fetchedNfts.pageKey;
-        } catch (error) {
-          console.error("Error while fetching NFTs:", error);
-          break;
-        }
-      } while (currentPageKey);
+      //     ownedNfts = [...ownedNfts, ...fetchedNfts.ownedNfts];
+      //     currentPageKey = fetchedNfts.pageKey;
+      //   } catch (error) {
+      //     console.error("Error while fetching NFTs:", error);
+      //     break;
+      //   }
+      // } while (currentPageKey);
     
-      setTotalOwnedNFTs(ownedNfts.length.toLocaleString());
-      setTotalNfts(ownedNfts);    
+      setTotalOwnedNFTs(selectedNFTsContext.length.toLocaleString());
+      setTotalNfts(selectedNFTsContext);    
       // Extract the contract addresses from the ownedNfts array
-      nftAddressesArray = ownedNfts.map((nft) => nft.contract.address);
+      nftAddressesArray = selectedNFTsContext.map((nft) => nft.contract.address);
     
-      await getOwnersForContracts(nftAddressesArray, addressOrEns);
+      if(nftAddressesArray.length) {
+        await getOwnersForContracts(nftAddressesArray, addressOrEns);
+      } else {
+        console.log("No NFT Addresses found for the owner");
+      }
     };
     
   
@@ -238,10 +248,15 @@ useEffect(() => {
       }
     };
   
-    if (ensAddress || address) { // Ensure address or ensAddress is not empty
+    if (triggerKindredSpirits && (ensAddress || address)) { // Ensure address or ensAddress is not empty
       runGetOwnersForContracts(ensAddress || address);
+      setTriggerKindredSpirits(false); // Reset the trigger after using it
     }
-  }, [ensAddress, address]);
+    
+  }, [triggerKindredSpirits, ensAddress, address, selectedNFTsContext]);
+
+  console.log(selectedNFTsContext)
+
 
   return (
     <div>
@@ -252,14 +267,24 @@ useEffect(() => {
       <h2 className="mb-4 text-4xl text-center font-bold leading-none tracking-tight text-white md:text-3xl lg:text-4xl">
         Kindred Spirits
       </h2>
-      <h3 className="mb-4 text-2xl text-center font-semibold leading-none tracking-tight text-gray-300 md:text-xl sm:px-15 lg:px-32">
-      We analyzed {totalWallets.toLocaleString()} unique wallet addresses across the {totalOwnedNFTs} NFTs owned by this address and summoned {Object.entries(filteredContractsForModal).slice(0, 20).length} kindred spirits 👻✨
+      {
+        !totalWallets && !totalOwnedNFTs  ? (
+          <h3 className="mb-4 text-2xl text-center font-semibold leading-none tracking-tight text-gray-300 md:text-xl sm:px-15 lg:px-32">
+      Please, in the next section, select the NFTs that you would like to analyze to find your kindred spirits 👻✨
       </h3>
-      <div className="flex justify-center ">
-      <button onClick={downloadKindredCSV} className="mx-2 text-teal-200 bg-teal-200/10 max-w-button ring-teal-200/30 rounded-xl flex-none mb-4 py-2 px-4 text-sm font-medium ring-1 ring-inset">
-                {buttonText}
-      </button>
-      </div>
+        ) : (
+          <>
+            <h3 className="mb-4 text-2xl text-center font-semibold leading-none tracking-tight text-gray-300 md:text-xl sm:px-15 lg:px-32">
+        We analyzed {totalWallets.toLocaleString()} unique wallet addresses across the {totalOwnedNFTs} NFTs owned by this address and summoned {Object.entries(filteredContractsForModal).slice(0, 20).length} kindred spirits 👻✨
+            </h3>
+            <div className="flex justify-center ">
+            <button onClick={downloadKindredCSV} className="mx-2 text-teal-200 bg-teal-200/10 max-w-button ring-teal-200/30 rounded-xl flex-none mb-4 py-2 px-4 text-sm font-medium ring-1 ring-inset">
+                      {buttonText}
+            </button>
+            </div>
+          </>
+        )
+      }
       <div className="flex justify-center">
         <ul role="list" className="divide-y">
           {Object.entries(filteredContractsForModal).slice(0, 20).map(([address, { count, contractsInCommon }]) => (

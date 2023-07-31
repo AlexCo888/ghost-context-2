@@ -1,10 +1,8 @@
-import { useAccount } from 'wagmi';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { Web3Button } from '@web3modal/react';
 import EnsInput from './EnsInput';
 
 export default function Hero() {
-  const { address, isConnecting, isDisconnected } = useAccount();
   return (
     <div className='relative isolate overflow-hidden bg-gray-900'>
       <svg

@@ -1,6 +1,6 @@
   import { useEnsAddress, useEnsName } from 'wagmi';
   import { useState, useContext, useEffect } from 'react';
-  import { EnsContext } from './EnsContext'; // Import the context
+  import { EnsContext } from './context/EnsContext'; // Import the context
 
 
   export default function EnsInput() {
@@ -18,11 +18,9 @@
     useEffect(() => {
       try {
         if (!isError && !isLoading && data && !ensNameOrAddress.startsWith('0x')) {
-          console.log('Setting ENS address:', data);
           setEnsAddress(data);
         }
         if (!addressError && !isLoadingAddress && !data && dataAddress && ensNameOrAddress.startsWith('0x')) {
-          console.log('Setting Ethereum address:', dataAddress);
           setEnsAddress(dataAddress);
         }
       } catch (error) {

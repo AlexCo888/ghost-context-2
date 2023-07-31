@@ -9,7 +9,7 @@ export default function NftDescription({ nft }) {
   };
 
   return (
-    <div>
+    <div className="w-64 max-w-lg overflow-auto nice-scrollbar">  {/* Here's the added class */}
       {nft && showFullDescription ? (
         <p>{nft.description}</p>
       ) : (

@@ -11,8 +11,10 @@ import Hero from './components/Hero';
 import TableList from './components/NftTableList';
 import MintedNfts from './components/MintedNfts';
 import KindredSpiritsList from './components/KindredSpiritsList';
-import { EnsContext } from './components/EnsContext'; // Import the context
+import { EnsContext } from './components/context/EnsContext'; // Import the context
 import { useState } from 'react'; // Import the context
+import { FetchDataProvider } from './components/context/KindredButtonContext';
+
 
 export default function App() {
   const chains = [goerli, arbitrum, mainnet, polygon];
@@ -34,8 +36,10 @@ export default function App() {
       <WagmiConfig config={wagmiConfig}>
       <EnsContext.Provider value={{ ensAddress, setEnsAddress }}>
         <Hero />
+        <FetchDataProvider>
         <KindredSpiritsList />
         <TableList />
+        </FetchDataProvider>
         {/* <MintedNfts /> */}
         </EnsContext.Provider>
       </WagmiConfig>
