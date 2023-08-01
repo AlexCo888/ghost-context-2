@@ -28,14 +28,10 @@ export default function NftTableList() {
   const [selectedNFTs, setSelectedNFTs] = useState([])
   const [isLoadingModal, setIsLoadingModal] = useState(false);
   const {
-    selectedNFTsContext,
     setSelectedNFTsContext,
-    triggerKindredSpirits,
     setTriggerKindredSpirits,
-    ownedNFTs,
     setOwnedNFTs,
     setShowKindredSpirits,
-    showKindredSpirits
   } = useContext(KindredButtonContext);
   
   const config = {
@@ -135,7 +131,7 @@ useEffect(() => {
     setSelectedNFTs([])
     setShowKindredSpirits(true)
   }
-  
+
 
     return (
       <div>

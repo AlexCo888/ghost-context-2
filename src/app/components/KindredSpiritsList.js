@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { Alchemy, Network } from "alchemy-sdk";
 import NftModal from "./NftModal";
 import { useEnsName } from "wagmi";
@@ -35,16 +35,16 @@ const KindredSpiritsList = () => {
   const [totalNfts, setTotalNfts] = useState([]);
   const [totalContracts, setTotalContracts] = useState(null);
   const [buttonText, setButtonText] = useState("Download Kindred Spirits");
+  const [scrollRequested, setScrollRequested] = useState(false);
+  const scrollToRef = useRef(null);
   const {
     selectedNFTsContext,
     setSelectedNFTsContext,
     triggerKindredSpirits,
     setTriggerKindredSpirits,
     ownedNFTs,
-    showKindredSpirits,
-    setShowKindredSpirits
+    showKindredSpirits
   } = useContext(KindredButtonContext);
-    
   const [selectedModal, setSelectedModal] = useState(null);
 
   const openModal = (address) => {
@@ -153,7 +153,7 @@ useEffect(() => {
     
         while (response.pageKey) {
             response = await alchemy.nft.getOwnersForContract(nftAddress, { pageKey: response.pageKey });
-            if (owners.length > 80000) {
+            if (owners.length > 150000) {
                 break;  // break out of the loop entirely
             }
             owners = owners.concat(response.owners);
@@ -208,6 +208,7 @@ useEffect(() => {
       setSortedResult(sortedResult);
       setFilteredContractsForModal(sortedResultContractsInCommon);
       setIsLoading(false); // hide the modal
+      setScrollRequested(true);
       setSelectedNFTsContext([])
     };
   
@@ -258,7 +259,13 @@ useEffect(() => {
     
   }, [triggerKindredSpirits, ensAddress, address, selectedNFTsContext]);
 
-  console.log(selectedNFTsContext)
+
+  useEffect(() => {
+    if (scrollRequested && scrollToRef.current) {
+      scrollToRef.current.scrollIntoView({ behavior: "smooth" });
+      setScrollRequested(false); // Reset the request
+    }
+  }, [scrollRequested, setScrollRequested, scrollToRef]);
 
 
   return (
@@ -266,7 +273,7 @@ useEffect(() => {
          {isDisconnected && !ensAddress || isConnecting && !ensAddress || !showKindredSpirits && selectedNFTsContext ? (
           <div></div>
         ) : (
-    <div className="bg-gray-900">
+    <div ref={scrollToRef} className="bg-gray-900">
       <h2 className="mb-4 text-4xl text-center font-bold leading-none tracking-tight text-white md:text-3xl lg:text-4xl">
         Kindred Spirits
       </h2>

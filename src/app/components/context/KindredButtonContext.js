@@ -8,6 +8,7 @@ export const FetchDataProvider = ({ children }) => {
   const [ownedNFTs, setOwnedNFTs] = useState([]);
   const [showKindredSpirits, setShowKindredSpirits] = useState(true);
 
+
   return (
     <KindredButtonContext.Provider
       value={{

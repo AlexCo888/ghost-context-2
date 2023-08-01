@@ -43,9 +43,6 @@
       return ensNameOrAddress;
     };
 
-    console.log(showKindredSpirits)
-
-
     return (
       <div>
         <form onSubmit={handleSubmit}>
