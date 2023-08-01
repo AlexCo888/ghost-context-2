@@ -300,9 +300,9 @@ useEffect(() => {
                 </h3>
               </div>
               <p className="mt-3 truncate text-sm text-gray-500">
-                You have{" "}
-                <span className="text-gray-400">{count}</span> NFTs in common
-                with this address.
+              This address holds{" "}
+                <span className="text-gray-400">{count}</span> out of the <span className="text-gray-400">{ownedNFTs.length}</span>
+                {" "}NFTs in common."
               </p>
               <a
                 href={`https://etherscan.io/address/${address}`}

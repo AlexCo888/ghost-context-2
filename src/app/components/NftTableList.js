@@ -147,7 +147,7 @@ useEffect(() => {
                   Owned NFTs
                 </h2>
                 <p className='mt-2 text-md text-gray-200'>
-                Please select the NFTs that you would like to analyze to find your kindred spirits 👻✨
+                o summon a list of kindred spirits, please select the NFTs that you would like to analyze  👻✨
                 </p>
                 <p className='mt-2 text-md text-gray-200'>
                   A list of <span className='font-bold'>{totalOwnedNFTs}</span> NFTs owned by this address. 
@@ -173,7 +173,7 @@ useEffect(() => {
                     type="button"
                     className="inline-flex items-center rounded bg-gradient-to-r from-purple-500 to-pink-600 px-2 py-1 text-center text-sm font-semibold text-white shadow-smfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                   >
-                    Summon the Kindred Spirits
+                    Summon Kindred Spirits
                   </button>
                 </div>
               )}
