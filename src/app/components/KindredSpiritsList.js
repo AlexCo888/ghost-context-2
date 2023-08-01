@@ -302,7 +302,7 @@ useEffect(() => {
               <p className="mt-3 truncate text-sm text-gray-500">
               This address holds{" "}
                 <span className="text-gray-400">{count}</span> out of the <span className="text-gray-400">{ownedNFTs.length}</span>
-                {" "}NFTs in common."
+                {" "}NFTs in common.
               </p>
               <a
                 href={`https://etherscan.io/address/${address}`}

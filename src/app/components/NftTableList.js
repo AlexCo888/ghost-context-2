@@ -147,7 +147,7 @@ useEffect(() => {
                   Owned NFTs
                 </h2>
                 <p className='mt-2 text-md text-gray-200'>
-                o summon a list of kindred spirits, please select the NFTs that you would like to analyze  👻✨
+                To summon a list of kindred spirits, please select the NFTs that you would like to analyze  👻✨
                 </p>
                 <p className='mt-2 text-md text-gray-200'>
                   A list of <span className='font-bold'>{totalOwnedNFTs}</span> NFTs owned by this address. 
