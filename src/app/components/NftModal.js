@@ -129,6 +129,12 @@ const Address = ({ address }) => {
     chainId: 1,
   });
 
+  if(!data) {
+    const prefix = address.slice(0, 4);
+    const suffix = address.slice(-4);
+    address = `${prefix}...${suffix}`;
+  }
+
   return (
     <>
       {isLoading ? (
