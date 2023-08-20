@@ -142,7 +142,7 @@ useEffect(() => {
     setSearchQuery(nftQuery);
   
     if(nftQuery) {
-      const newFilteredNfts = nfts.filter((nft) => {
+      const newFilteredNfts = totalNfts.filter((nft) => {
         if (nft.rawMetadata && nft.rawMetadata['name']) {
           return nft.rawMetadata['name'].toLowerCase().includes(nftQuery.toLowerCase());
         }
