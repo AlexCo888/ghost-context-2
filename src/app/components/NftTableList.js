@@ -53,7 +53,6 @@ export default function NftTableList() {
       try {
         const fetchedNfts = await alchemy.nft.getNftsForOwner(
           addressToFetch,
-          {orderBy: "transferTime"},
           {pageKey: currentPageKey}
         );
         ownedNfts = [...ownedNfts, ...fetchedNfts.ownedNfts];
@@ -71,7 +70,6 @@ export default function NftTableList() {
     setNfts(ownedNfts.slice(0, numNftsToShow));
     setIsLoadingModal(false);
 };
-
 
 useEffect(() => {
     const addressToFetch = ensAddress || (!ensAddress && address);
@@ -145,7 +143,10 @@ useEffect(() => {
   
     if(nftQuery) {
       const newFilteredNfts = nfts.filter((nft) => {
-        return nft.rawMetadata['name'].toLowerCase().includes(nftQuery.toLowerCase());
+        if (nft.rawMetadata && nft.rawMetadata['name']) {
+          return nft.rawMetadata['name'].toLowerCase().includes(nftQuery.toLowerCase());
+        }
+        return false;
       });
   
       setFilteredNfts(newFilteredNfts);
