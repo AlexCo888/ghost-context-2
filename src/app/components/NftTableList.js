@@ -4,6 +4,8 @@ import NftDescription from './NftDescription';
 import { useAccount } from 'wagmi';
 import { EnsContext } from './context/EnsContext';
 import { KindredButtonContext } from './context/KindredButtonContext';
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+
 import Modal from 'react-modal';
 
 
@@ -27,6 +29,9 @@ export default function NftTableList() {
   const [indeterminate, setIndeterminate] = useState(false)
   const [selectedNFTs, setSelectedNFTs] = useState([])
   const [isLoadingModal, setIsLoadingModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredNfts, setFilteredNfts] = useState([]);
+  const [isFiltered, setIsFiltered] = useState(false);
   const {
     setSelectedNFTsContext,
     setTriggerKindredSpirits,
@@ -48,6 +53,7 @@ export default function NftTableList() {
       try {
         const fetchedNfts = await alchemy.nft.getNftsForOwner(
           addressToFetch,
+          {orderBy: "transferTime"},
           {pageKey: currentPageKey}
         );
         ownedNfts = [...ownedNfts, ...fetchedNfts.ownedNfts];
@@ -70,6 +76,7 @@ export default function NftTableList() {
 useEffect(() => {
     const addressToFetch = ensAddress || (!ensAddress && address);
     if (addressToFetch) {
+      setFilteredNfts([]);  // reset the filteredNfts state
       setTotalNfts([]);  // reset the totalNfts state
       setNumNftsToShow(20);  // reset numNftsToShow state
       setPageKey(null);  // reset pageKey state
@@ -132,6 +139,23 @@ useEffect(() => {
     setShowKindredSpirits(true)
   }
 
+  const handleSearchInputChange = (event) => {
+    const nftQuery = event.target.value;
+    setSearchQuery(nftQuery);
+  
+    const newFilteredNfts = nfts.filter((nft) => {
+      return nft.rawMetadata['name'].toLowerCase().includes(nftQuery.toLowerCase());
+    });
+  
+    setFilteredNfts(newFilteredNfts);
+    if(!nftQuery) {
+      setIsFiltered(false);
+    } else {
+      setIsFiltered(true);
+    }
+  }
+  const nftsToDisplay = filteredNfts && filteredNfts.length > 0 ? filteredNfts : nfts;
+
 
     return (
       <div>
@@ -149,18 +173,35 @@ useEffect(() => {
                 <p className='mt-2 text-md text-gray-200'>
                 To summon a list of kindred spirits, please select the NFTs that you would like to analyze  👻✨
                 </p>
-                <p className='mt-2 text-md text-gray-200'>
+                <p className='mt-2 mb-5 text-md text-gray-200'>
                   A list of <span className='font-bold'>{totalOwnedNFTs}</span> NFTs owned by this address. 
                   {/* Click the button to summon the kindred spirits of this address. */}
                 </p>
                 
-                {/* <button
-                  type='button'
-                  className='rounded-md bg-gradient-to-r from-purple-500 to-pink-600 px-3 py-2 mt-4 text-center text-sm font-semibold text-white shadow-smfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
-                  onClick={handleSeeMoreClick}
-                >
-                  Show my Kindred Spirits
-                </button> */}
+                <div>
+                  <div className="mt-2 flex rounded-md shadow-sm">
+                    <div className="relative flex flex-grow items-stretch focus-within:z-10">
+                    <label
+                    htmlFor="name"
+                    className="absolute -top-2 left-2 inline-block rounded-sm bg-purple-700 px-1 text-xs font-medium text-white"
+                  >
+                    Filter by name
+                  </label>
+                      <div className="pointer-events-none text-xs absolute inset-y-0 left-0 flex items-center pl-3">
+                        <MagnifyingGlassIcon className="h-5 w-5 pt-1 text-gray-400" aria-hidden="true" />
+                      </div>
+                      <input
+                        type="text"
+                        name="search"
+                        id="search"
+                        value={searchQuery} 
+                        onChange={handleSearchInputChange}
+                        className="block w-full rounded-md border-0 py-1.5 mt-1 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-600 max-sm:text-xs sm:leading-6"
+                        placeholder="CryptoPunk #1000"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div className='relative mt-8 flow-root'>
@@ -216,8 +257,8 @@ useEffect(() => {
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-gray-200 bg-gray-900'>
-                      {nfts && !nfts.metadataError &&
-                        nfts.map((nft, i) => {
+                      {nftsToDisplay && !nftsToDisplay.metadataError &&
+                        nftsToDisplay.map((nft, i) => {
                           if (
                             nft.media[0] &&
                             typeof nft.media[0]['thumbnail'] !== 'undefined'
@@ -292,7 +333,7 @@ useEffect(() => {
                     </tbody>
                   </table>
                   <div className='flex mt-4 sm:ml-16 sm:mt-0 sm:flex-none items-center max-sm:justify-start md:justify-center'>
-                  {totalNfts && totalNfts.length > numNftsToShow && (
+                  {!isFiltered && totalNfts && totalNfts.length > numNftsToShow && (
                 <button
                   type='button'
                   className='ml-36 md:ml-0 block rounded-md bg-gradient-to-r from-purple-500 to-pink-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-smfocus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
