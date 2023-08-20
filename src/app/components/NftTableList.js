@@ -76,11 +76,11 @@ export default function NftTableList() {
 useEffect(() => {
     const addressToFetch = ensAddress || (!ensAddress && address);
     if (addressToFetch) {
-      setFilteredNfts([]);  // reset the filteredNfts state
       setTotalNfts([]);  // reset the totalNfts state
       setNumNftsToShow(20);  // reset numNftsToShow state
       setPageKey(null);  // reset pageKey state
       fetchNfts(addressToFetch, null);
+      setFilteredNfts([]);  // reset the filteredNfts state
     }
       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ensAddress, address]);
@@ -143,18 +143,20 @@ useEffect(() => {
     const nftQuery = event.target.value;
     setSearchQuery(nftQuery);
   
-    const newFilteredNfts = nfts.filter((nft) => {
-      return nft.rawMetadata['name'].toLowerCase().includes(nftQuery.toLowerCase());
-    });
+    if(nftQuery) {
+      const newFilteredNfts = nfts.filter((nft) => {
+        return nft.rawMetadata['name'].toLowerCase().includes(nftQuery.toLowerCase());
+      });
   
-    setFilteredNfts(newFilteredNfts);
-    if(!nftQuery) {
-      setIsFiltered(false);
-    } else {
+      setFilteredNfts(newFilteredNfts);
       setIsFiltered(true);
+    } else {
+      setIsFiltered(false);
+      setFilteredNfts(nfts);  // Reset filteredNfts to the original list
     }
   }
-  const nftsToDisplay = filteredNfts && filteredNfts.length > 0 ? filteredNfts : nfts;
+  
+  const nftsToDisplay = isFiltered ? filteredNfts : nfts;
 
 
     return (
@@ -178,7 +180,7 @@ useEffect(() => {
                   {/* Click the button to summon the kindred spirits of this address. */}
                 </p>
                 
-                <div>
+                <div className='flex justify-center'>
                   <div className="mt-2 flex rounded-md shadow-sm">
                     <div className="relative flex flex-grow items-stretch focus-within:z-10">
                     <label
@@ -196,7 +198,7 @@ useEffect(() => {
                         id="search"
                         value={searchQuery} 
                         onChange={handleSearchInputChange}
-                        className="block w-full rounded-md border-0 py-1.5 mt-1 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-600 max-sm:text-xs sm:leading-6"
+                        className="block w-full lg:min-w-md rounded-md border-0 py-1.5 mt-1 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-600 max-sm:text-xs sm:leading-6"
                         placeholder="CryptoPunk #1000"
                       />
                     </div>
@@ -257,7 +259,12 @@ useEffect(() => {
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-gray-200 bg-gray-900'>
-                      {nftsToDisplay && !nftsToDisplay.metadataError &&
+                      {nftsToDisplay.length === 0 ? (
+                        <tr>
+                        <td className='relative px-7 sm:w-12 sm:px-6'>No Results</td>
+                        </tr>
+                      ) : ( 
+                      nftsToDisplay && !nftsToDisplay.metadataError &&
                         nftsToDisplay.map((nft, i) => {
                           if (
                             nft.media[0] &&
@@ -329,7 +336,7 @@ useEffect(() => {
                               </>
                             )
                           }
-                        })}
+                        }))}
                     </tbody>
                   </table>
                   <div className='flex mt-4 sm:ml-16 sm:mt-0 sm:flex-none items-center max-sm:justify-start md:justify-center'>
