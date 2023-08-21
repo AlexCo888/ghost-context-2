@@ -48,28 +48,41 @@ export default function NftTableList() {
   const fetchNfts = async (addressToFetch, key) => {
     setIsLoadingModal(true);
     let ownedNfts = [];
+    let seenAddresses = new Set(); // Track seen contract addresses
+    let uniqueNfts = [];           // Store NFTs with unique contract addresses
     let currentPageKey = key;
-    while(true) {
-      try {
-        const fetchedNfts = await alchemy.nft.getNftsForOwner(
-          addressToFetch,
-          {pageKey: currentPageKey}
-        );
-        ownedNfts = [...ownedNfts, ...fetchedNfts.ownedNfts];
-        if(!fetchedNfts.pageKey) {
-          break;
+    while (true) {
+        try {
+            const fetchedNfts = await alchemy.nft.getNftsForOwner(
+                addressToFetch,
+                { pageKey: currentPageKey }
+            );
+            ownedNfts = [...ownedNfts, ...fetchedNfts.ownedNfts];
+            
+            // Filter out NFTs with duplicated contract addresses
+            for (let nft of fetchedNfts.ownedNfts) {
+                const address = nft.contract['address'];
+                if (!seenAddresses.has(address)) {
+                    seenAddresses.add(address);
+                    uniqueNfts.push(nft);
+                }
+            }
+            
+            if (!fetchedNfts.pageKey) {
+                break;
+            }
+            currentPageKey = fetchedNfts.pageKey;
+        } catch (err) {
+            console.error("Error while fetching NFTs:", err);
         }
-        currentPageKey = fetchedNfts.pageKey;
-      } catch (err) {
-        console.error("Error while fetching NFTs:", err);
-      }
     }
     setPageKey(null);
-    setTotalOwnedNFTs(ownedNfts.length.toLocaleString());
-    setTotalNfts(ownedNfts);
-    setNfts(ownedNfts.slice(0, numNftsToShow));
+    setTotalOwnedNFTs(uniqueNfts.length.toLocaleString());
+    setTotalNfts(uniqueNfts);
+    setNfts(uniqueNfts.slice(0, numNftsToShow));
     setIsLoadingModal(false);
 };
+
 
 useEffect(() => {
     const addressToFetch = ensAddress || (!ensAddress && address);
