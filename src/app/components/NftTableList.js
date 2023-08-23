@@ -51,20 +51,15 @@ export default function NftTableList() {
     let seenAddresses = new Set(); // Track seen contract addresses
     let uniqueNfts = [];           // Store NFTs with unique contract addresses
     let currentPageKey = key;
-    let previousPageKey = null;    // Store the previous pageKey
-
     while (true) {
         try {
             const fetchedNfts = await alchemy.nft.getNftsForOwner(
                 addressToFetch,
-                {orderBy: 'transferTime'},
                 { pageKey: currentPageKey }
             );
-            console.log(`Fetched ${fetchedNfts.ownedNfts.length} NFTs`);
-            console.log(`Current PageKey: ${currentPageKey}, Returned PageKey: ${fetchedNfts.pageKey}`);
-            
             ownedNfts = [...ownedNfts, ...fetchedNfts.ownedNfts];
             
+            // Filter out NFTs with duplicated contract addresses
             for (let nft of fetchedNfts.ownedNfts) {
                 const address = nft.contract['address'];
                 if (!seenAddresses.has(address)) {
@@ -73,27 +68,20 @@ export default function NftTableList() {
                 }
             }
             
-            // Break out of the loop if there's no pageKey or if it's the same as the previous pageKey
-            if (!fetchedNfts.pageKey || fetchedNfts.pageKey === previousPageKey) {
+            if (!fetchedNfts.pageKey) {
                 break;
             }
-
-            previousPageKey = currentPageKey;
             currentPageKey = fetchedNfts.pageKey;
-
         } catch (err) {
             console.error("Error while fetching NFTs:", err);
-            break; // Exit the loop in case of an error to prevent infinite loops
         }
     }
-
     setPageKey(null);
     setTotalOwnedNFTs(uniqueNfts.length.toLocaleString());
     setTotalNfts(uniqueNfts);
     setNfts(uniqueNfts.slice(0, numNftsToShow));
     setIsLoadingModal(false);
 };
-
 
 
 useEffect(() => {
