@@ -6,7 +6,7 @@ import {
 } from '@web3modal/ethereum';
 import { Web3Modal } from '@web3modal/react';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { goerli, arbitrum, mainnet, polygon } from 'wagmi/chains';
+import { goerli, arbitrum, mainnet, polygon, optimism } from 'wagmi/chains';
 import Hero from './components/Hero';
 import TableList from './components/NftTableList';
 import MintedNfts from './components/MintedNfts';
@@ -17,7 +17,7 @@ import { FetchDataProvider } from './components/context/KindredButtonContext';
 
 
 export default function App() {
-  const chains = [goerli, arbitrum, mainnet, polygon];
+  const chains = [goerli, arbitrum, mainnet, polygon, optimism];
   const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
   const [ensAddress, setEnsAddress] = useState(null);
 
